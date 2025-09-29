@@ -11,7 +11,7 @@ import java.net.http.HttpClient;
 public final class SubscribeToLookupTables {
 
   public static void main(final String[] args) throws InterruptedException {
-    try (final var httpClient = HttpClient.newHttpClient()) {
+    final var httpClient = HttpClient.newHttpClient();
 
       final var webSocket = SolanaRpcWebsocket.build()
           .uri(SolanaNetwork.MAIN_NET.getWebSocketEndpoint())
@@ -34,6 +34,5 @@ public final class SubscribeToLookupTables {
       webSocket.connect();
 
       Thread.sleep(Integer.MAX_VALUE);
-    }
   }
 }

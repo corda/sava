@@ -17,4 +17,5 @@ module software.sava.core {
   exports software.sava.core.serial;
   exports software.sava.core.tx;
   exports software.sava.core.util;
+  exports software.sava.core.internal to software.sava.rpc;
 }

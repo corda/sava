@@ -576,11 +576,11 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   }
 
   @Override
-  public CompletableFuture<List<InflationReward>> getInflationReward(final SequencedCollection<PublicKey> keys) {
+  public CompletableFuture<List<InflationReward>> getInflationReward(final Collection<PublicKey> keys) {
     return getInflationReward(defaultCommitment, keys);
   }
 
-  private String joinKeys(final SequencedCollection<PublicKey> keys) {
+  private String joinKeys(final Collection<PublicKey> keys) {
     return keys == null || keys.isEmpty() ? "[]" : keys.stream()
         .map(PublicKey::toBase58)
         .collect(Collectors.joining("\",\"", "[\"", "\"]"));
@@ -588,7 +588,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
 
   @Override
   public CompletableFuture<List<InflationReward>> getInflationReward(final Commitment commitment,
-                                                                     final SequencedCollection<PublicKey> keys) {
+                                                                     final Collection<PublicKey> keys) {
     return sendPostRequest(INFLATION_REWARDS, format("""
                 {"jsonrpc":"2.0","id":%d,"method":"getInflationReward","params":[%s,{"commitment":"%s"}]}""",
             id.incrementAndGet(), joinKeys(keys), commitment.getValue()
@@ -597,14 +597,14 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   }
 
   @Override
-  public CompletableFuture<List<InflationReward>> getInflationReward(final SequencedCollection<PublicKey> keys,
+  public CompletableFuture<List<InflationReward>> getInflationReward(final Collection<PublicKey> keys,
                                                                      final long epoch) {
     return getInflationReward(defaultCommitment, keys, epoch);
   }
 
   @Override
   public CompletableFuture<List<InflationReward>> getInflationReward(final Commitment commitment,
-                                                                     final SequencedCollection<PublicKey> keys,
+                                                                     final Collection<PublicKey> keys,
                                                                      final long epoch) {
     return sendPostRequest(INFLATION_REWARDS, format("""
                 {"jsonrpc":"2.0","id":%d,"method":"getInflationReward","params":[%s,{"commitment":"%s","epoch":%d}]}""",
@@ -726,14 +726,14 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   }
 
   @Override
-  public <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final SequencedCollection<PublicKey> keys,
+  public <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final Collection<PublicKey> keys,
                                                                          final BiFunction<PublicKey, byte[], T> factory) {
     return getMultipleAccounts(defaultCommitment, keys, factory);
   }
 
   @Override
   public <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final Commitment commitment,
-                                                                         final SequencedCollection<PublicKey> keys,
+                                                                         final Collection<PublicKey> keys,
                                                                          final BiFunction<PublicKey, byte[], T> factory) {
     return getMultipleAccounts(commitment, null, 0, 0, keys, factory);
   }
@@ -741,13 +741,13 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   @Override
   public CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final int length,
                                                                           final int offset,
-                                                                          final SequencedCollection<PublicKey> keys) {
+                                                                          final Collection<PublicKey> keys) {
     return getMultipleAccounts(defaultCommitment, length, offset, keys, BYTES_IDENTITY);
   }
 
   @Override
   public CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final BigInteger minContextSlot,
-                                                                          final SequencedCollection<PublicKey> keys) {
+                                                                          final Collection<PublicKey> keys) {
     return getMultipleAccounts(defaultCommitment, minContextSlot, keys, BYTES_IDENTITY);
   }
 
@@ -755,14 +755,14 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   public CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final BigInteger minContextSlot,
                                                                           final int length,
                                                                           final int offset,
-                                                                          final SequencedCollection<PublicKey> keys) {
+                                                                          final Collection<PublicKey> keys) {
     return getMultipleAccounts(defaultCommitment, minContextSlot, length, offset, keys, BYTES_IDENTITY);
   }
 
   @Override
   public CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final Commitment commitment,
                                                                           final BigInteger minContextSlot,
-                                                                          final SequencedCollection<PublicKey> keys) {
+                                                                          final Collection<PublicKey> keys) {
     return getMultipleAccounts(commitment, minContextSlot, keys, BYTES_IDENTITY);
   }
 
@@ -770,7 +770,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   public CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final Commitment commitment,
                                                                           final int length,
                                                                           final int offset,
-                                                                          final SequencedCollection<PublicKey> keys) {
+                                                                          final Collection<PublicKey> keys) {
     return getMultipleAccounts(commitment, length, offset, keys, BYTES_IDENTITY);
   }
 
@@ -779,21 +779,21 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
                                                                           final BigInteger minContextSlot,
                                                                           final int length,
                                                                           final int offset,
-                                                                          final SequencedCollection<PublicKey> keys) {
+                                                                          final Collection<PublicKey> keys) {
     return getMultipleAccounts(commitment, minContextSlot, length, offset, keys, BYTES_IDENTITY);
   }
 
   @Override
   public <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final int length,
                                                                          final int offset,
-                                                                         final SequencedCollection<PublicKey> keys,
+                                                                         final Collection<PublicKey> keys,
                                                                          final BiFunction<PublicKey, byte[], T> factory) {
     return getMultipleAccounts(defaultCommitment, length, offset, keys, factory);
   }
 
   @Override
   public <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final BigInteger minContextSlot,
-                                                                         final SequencedCollection<PublicKey> keys,
+                                                                         final Collection<PublicKey> keys,
                                                                          final BiFunction<PublicKey, byte[], T> factory) {
     return getMultipleAccounts(defaultCommitment, minContextSlot, keys, factory);
   }
@@ -802,7 +802,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   public <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final BigInteger minContextSlot,
                                                                          final int length,
                                                                          final int offset,
-                                                                         final SequencedCollection<PublicKey> keys,
+                                                                         final Collection<PublicKey> keys,
                                                                          final BiFunction<PublicKey, byte[], T> factory) {
     return getMultipleAccounts(defaultCommitment, minContextSlot, length, offset, keys, factory);
   }
@@ -811,7 +811,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   public <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final Commitment commitment,
                                                                          final int length,
                                                                          final int offset,
-                                                                         final SequencedCollection<PublicKey> keys,
+                                                                         final Collection<PublicKey> keys,
                                                                          final BiFunction<PublicKey, byte[], T> factory) {
     return getMultipleAccounts(commitment, null, length, offset, keys, factory);
   }
@@ -819,7 +819,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   @Override
   public <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final Commitment commitment,
                                                                          final BigInteger minContextSlot,
-                                                                         final SequencedCollection<PublicKey> keys,
+                                                                         final Collection<PublicKey> keys,
                                                                          final BiFunction<PublicKey, byte[], T> factory) {
     return getMultipleAccounts(commitment, minContextSlot, 0, 0, keys, factory);
   }
@@ -829,7 +829,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
                                                                          final BigInteger minContextSlot,
                                                                          final int length,
                                                                          final int offset,
-                                                                         final SequencedCollection<PublicKey> keys,
+                                                                         final Collection<PublicKey> keys,
                                                                          final BiFunction<PublicKey, byte[], T> factory) {
     return getAppliedAccounts(
         commitment, minContextSlot, length, offset, keys,
@@ -841,7 +841,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
                                                       final BigInteger minContextSlot,
                                                       final int length,
                                                       final int offset,
-                                                      final SequencedCollection<PublicKey> keys,
+                                                      final Collection<PublicKey> keys,
                                                       final BiFunction<JsonIterator, Context, R> adapter) {
     if (keys.isEmpty()) {
       throw new IllegalArgumentException("keys must not be empty");
@@ -894,14 +894,14 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   }
 
   @Override
-  public <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final SequencedCollection<PublicKey> keys,
+  public <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final Collection<PublicKey> keys,
                                                                  final BiFunction<PublicKey, byte[], T> factory) {
     return getAccounts(defaultCommitment, keys, factory);
   }
 
   @Override
   public <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final Commitment commitment,
-                                                                 final SequencedCollection<PublicKey> keys,
+                                                                 final Collection<PublicKey> keys,
                                                                  final BiFunction<PublicKey, byte[], T> factory) {
     return getAccounts(commitment, null, 0, 0, keys, factory);
   }
@@ -909,13 +909,13 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   @Override
   public CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final int length,
                                                                   final int offset,
-                                                                  final SequencedCollection<PublicKey> keys) {
+                                                                  final Collection<PublicKey> keys) {
     return getAccounts(defaultCommitment, length, offset, keys, BYTES_IDENTITY);
   }
 
   @Override
   public CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final BigInteger minContextSlot,
-                                                                  final SequencedCollection<PublicKey> keys) {
+                                                                  final Collection<PublicKey> keys) {
     return getAccounts(defaultCommitment, minContextSlot, keys, BYTES_IDENTITY);
   }
 
@@ -923,14 +923,14 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   public CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final BigInteger minContextSlot,
                                                                   final int length,
                                                                   final int offset,
-                                                                  final SequencedCollection<PublicKey> keys) {
+                                                                  final Collection<PublicKey> keys) {
     return getAccounts(defaultCommitment, minContextSlot, length, offset, keys, BYTES_IDENTITY);
   }
 
   @Override
   public CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final Commitment commitment,
                                                                   final BigInteger minContextSlot,
-                                                                  final SequencedCollection<PublicKey> keys) {
+                                                                  final Collection<PublicKey> keys) {
     return getAccounts(commitment, minContextSlot, keys, BYTES_IDENTITY);
   }
 
@@ -938,7 +938,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   public CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final Commitment commitment,
                                                                   final int length,
                                                                   final int offset,
-                                                                  final SequencedCollection<PublicKey> keys) {
+                                                                  final Collection<PublicKey> keys) {
     return getAccounts(commitment, length, offset, keys, BYTES_IDENTITY);
   }
 
@@ -947,21 +947,21 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
                                                                   final BigInteger minContextSlot,
                                                                   final int length,
                                                                   final int offset,
-                                                                  final SequencedCollection<PublicKey> keys) {
+                                                                  final Collection<PublicKey> keys) {
     return getAccounts(commitment, minContextSlot, length, offset, keys, BYTES_IDENTITY);
   }
 
   @Override
   public <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final int length,
                                                                  final int offset,
-                                                                 final SequencedCollection<PublicKey> keys,
+                                                                 final Collection<PublicKey> keys,
                                                                  final BiFunction<PublicKey, byte[], T> factory) {
     return getAccounts(defaultCommitment, length, offset, keys, factory);
   }
 
   @Override
   public <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final BigInteger minContextSlot,
-                                                                 final SequencedCollection<PublicKey> keys,
+                                                                 final Collection<PublicKey> keys,
                                                                  final BiFunction<PublicKey, byte[], T> factory) {
     return getAccounts(defaultCommitment, minContextSlot, keys, factory);
   }
@@ -970,7 +970,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   public <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final BigInteger minContextSlot,
                                                                  final int length,
                                                                  final int offset,
-                                                                 final SequencedCollection<PublicKey> keys,
+                                                                 final Collection<PublicKey> keys,
                                                                  final BiFunction<PublicKey, byte[], T> factory) {
     return getAccounts(defaultCommitment, minContextSlot, length, offset, keys, factory);
   }
@@ -979,7 +979,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   public <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final Commitment commitment,
                                                                  final int length,
                                                                  final int offset,
-                                                                 final SequencedCollection<PublicKey> keys,
+                                                                 final Collection<PublicKey> keys,
                                                                  final BiFunction<PublicKey, byte[], T> factory) {
     return getAccounts(commitment, null, length, offset, keys, factory);
   }
@@ -987,7 +987,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   @Override
   public <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final Commitment commitment,
                                                                  final BigInteger minContextSlot,
-                                                                 final SequencedCollection<PublicKey> keys,
+                                                                 final Collection<PublicKey> keys,
                                                                  final BiFunction<PublicKey, byte[], T> factory) {
     return getAccounts(commitment, minContextSlot, 0, 0, keys, factory);
   }
@@ -997,7 +997,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
                                                                  final BigInteger minContextSlot,
                                                                  final int length,
                                                                  final int offset,
-                                                                 final SequencedCollection<PublicKey> keys,
+                                                                 final Collection<PublicKey> keys,
                                                                  final BiFunction<PublicKey, byte[], T> factory) {
     return getAppliedAccounts(
         commitment, minContextSlot, length, offset, keys,
@@ -1167,7 +1167,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   }
 
   @Override
-  public CompletableFuture<List<PrioritizationFee>> getRecentPrioritizationFees(final SequencedCollection<PublicKey> writablePublicKeys) {
+  public CompletableFuture<List<PrioritizationFee>> getRecentPrioritizationFees(final Collection<PublicKey> writablePublicKeys) {
     return recentPrioritizationFees(writablePublicKeys);
   }
 
@@ -1225,7 +1225,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
     );
   }
 
-  private String sigStatusBody(final SequencedCollection<String> signatures, final boolean searchTransactionHistory) {
+  private String sigStatusBody(final Collection<String> signatures, final boolean searchTransactionHistory) {
     final var joined = String.join("\",\"", signatures);
     return format("""
             {"jsonrpc":"2.0","id":%d,"method":"getSignatureStatuses","params":[["%s"],{"searchTransactionHistory":%b}]}""",
@@ -1234,7 +1234,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   }
 
   @Override
-  public CompletableFuture<Map<String, TxStatus>> getSignatureStatuses(final SequencedCollection<String> signatures,
+  public CompletableFuture<Map<String, TxStatus>> getSignatureStatuses(final Collection<String> signatures,
                                                                        final boolean searchTransactionHistory) {
     return sendPostRequest(
         applyGenericResponseValue((ji, context) -> TxStatus.parse(signatures, ji, context)),
@@ -1243,7 +1243,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   }
 
   @Override
-  public CompletableFuture<List<TxStatus>> getSigStatusList(final SequencedCollection<String> signatures,
+  public CompletableFuture<List<TxStatus>> getSigStatusList(final Collection<String> signatures,
                                                             final boolean searchTransactionHistory) {
     return sendPostRequest(SIG_STATUS_LIST, sigStatusBody(signatures, searchTransactionHistory));
   }
@@ -1552,7 +1552,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
 
   @Override
   public CompletableFuture<String> sendTransaction(final Transaction transaction,
-                                                   final SequencedCollection<Signer> signers,
+                                                   final Collection<Signer> signers,
                                                    final byte[] recentBlockHash) {
     return sendTransaction(defaultCommitment, transaction, signers, recentBlockHash);
   }
@@ -1560,7 +1560,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   @Override
   public CompletableFuture<String> sendTransaction(final Commitment preflightCommitment,
                                                    final Transaction transaction,
-                                                   final SequencedCollection<Signer> signers,
+                                                   final Collection<Signer> signers,
                                                    final byte[] recentBlockHash) {
     final var base64SignedTx = transaction.signAndBase64Encode(recentBlockHash, signers);
     return sendTransaction(preflightCommitment, base64SignedTx);
@@ -1596,7 +1596,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   @Override
   public CompletableFuture<TxSimulation> simulateTransaction(final Transaction transaction,
                                                              final PublicKey signer,
-                                                             final SequencedCollection<PublicKey> accounts) {
+                                                             final Collection<PublicKey> accounts) {
     return simulateTransaction(defaultCommitment, transaction, signer, accounts);
   }
 
@@ -1604,7 +1604,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   public CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
                                                              final Transaction transaction,
                                                              final PublicKey signer,
-                                                             final SequencedCollection<PublicKey> accounts) {
+                                                             final Collection<PublicKey> accounts) {
     final var base64TxData = transaction.base64EncodeToString();
     return simulateTransaction(commitment, base64TxData, signer, accounts);
   }
@@ -1612,7 +1612,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   @Override
   public CompletableFuture<TxSimulation> simulateTransaction(final String base64EncodedTx,
                                                              final PublicKey signer,
-                                                             final SequencedCollection<PublicKey> accounts) {
+                                                             final Collection<PublicKey> accounts) {
     return simulateTransaction(defaultCommitment, base64EncodedTx, signer, accounts);
   }
 
@@ -1620,39 +1620,39 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   public CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
                                                              final String base64EncodedTx,
                                                              final PublicKey signer,
-                                                             final SequencedCollection<PublicKey> accounts) {
+                                                             final Collection<PublicKey> accounts) {
     return simulateTransaction(commitment, base64EncodedTx, List.of(signer), accounts);
   }
 
   @Override
   public CompletableFuture<TxSimulation> simulateTransaction(final Transaction transaction,
-                                                             final SequencedCollection<PublicKey> signers,
-                                                             final SequencedCollection<PublicKey> accounts) {
+                                                             final Collection<PublicKey> signers,
+                                                             final Collection<PublicKey> accounts) {
     return simulateTransaction(defaultCommitment, transaction, signers, accounts);
   }
 
   @Override
   public CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
                                                              final Transaction transaction,
-                                                             final SequencedCollection<PublicKey> signers,
-                                                             final SequencedCollection<PublicKey> accounts) {
+                                                             final Collection<PublicKey> signers,
+                                                             final Collection<PublicKey> accounts) {
     final var base64TxData = transaction.base64EncodeToString();
     return simulateTransaction(commitment, base64TxData, signers, accounts);
   }
 
   @Override
   public CompletableFuture<TxSimulation> simulateTransaction(final String base64EncodedTx,
-                                                             final SequencedCollection<PublicKey> signers,
-                                                             final SequencedCollection<PublicKey> accounts) {
+                                                             final Collection<PublicKey> signers,
+                                                             final Collection<PublicKey> accounts) {
     return simulateTransaction(defaultCommitment, base64EncodedTx, signers, accounts);
   }
 
   @Override
   public CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
                                                              final String base64EncodedTx,
-                                                             final SequencedCollection<PublicKey> signers,
-                                                             final SequencedCollection<PublicKey> accounts) {
-    final SequencedCollection<PublicKey> returnAccounts;
+                                                             final Collection<PublicKey> signers,
+                                                             final Collection<PublicKey> accounts) {
+    final Collection<PublicKey> returnAccounts;
     if (accounts.isEmpty()) {
       if (signers.isEmpty()) {
         return simulateTransaction(commitment, base64EncodedTx, true);

@@ -17,7 +17,7 @@ public final class SubscribeToTokenAccounts {
     final var solanaAccounts = SolanaAccounts.MAIN_NET;
     final var tokenProgram = solanaAccounts.tokenProgram();
     final var tokenOwner = PublicKey.fromBase58Encoded("");
-    try (final var httpClient = HttpClient.newHttpClient()) {
+    final var httpClient = HttpClient.newHttpClient();
       final var webSocket = SolanaRpcWebsocket.build()
           .uri(SolanaNetwork.MAIN_NET.getWebSocketEndpoint())
           .webSocketBuilder(httpClient)
@@ -48,6 +48,5 @@ public final class SubscribeToTokenAccounts {
       webSocket.connect().join();
 
       Thread.sleep(Integer.MAX_VALUE);
-    }
   }
 }

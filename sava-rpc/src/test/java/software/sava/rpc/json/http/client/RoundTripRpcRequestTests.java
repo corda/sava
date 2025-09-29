@@ -72,7 +72,7 @@ final class RoundTripRpcRequestTests extends RpcRequestTests {
 
   private static void validateMultipleAccounts(final List<AccountInfo<byte[]>> accounts) {
     final var rentEpoch = new BigInteger("18446744073709551615");
-    var accountInfo = accounts.getFirst();
+    var accountInfo = accounts.get(0);
     assertEquals("7ubS3GccjhQY99AYNKXjNJqnXjaokEdfdV915xnCb96r", accountInfo.pubKey().toBase58());
     assertEquals("LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo", accountInfo.owner().toBase58());
     assertEquals(rentEpoch, accountInfo.rentEpoch());
@@ -85,7 +85,7 @@ final class RoundTripRpcRequestTests extends RpcRequestTests {
         .map(AccountInfo::context)
         .forEach(_context -> assertEquals(context, _context));
 
-    accountInfo = accounts.getLast();
+    accountInfo = accounts.get(accounts.size() - 1);
     assertEquals("5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6", accountInfo.pubKey().toBase58());
     assertEquals("LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo", accountInfo.owner().toBase58());
     assertEquals(rentEpoch, accountInfo.rentEpoch());
@@ -101,13 +101,13 @@ final class RoundTripRpcRequestTests extends RpcRequestTests {
   private void validateCompleteMultipleAccounts(final List<AccountInfo<byte[]>> accounts) {
     validateMultipleAccounts(accounts);
 
-    var accountInfo = accounts.getFirst();
+    var accountInfo = accounts.get(0);
     byte[] data = accountInfo.data();
     assertEquals(904, data.length);
     assertEquals(accountInfo.space(), data.length);
     assertEquals("cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij", PublicKey.readPubKey(data, 88).toString());
 
-    accountInfo = accounts.getLast();
+    accountInfo = accounts.get(accounts.size() - 1);
     data = accountInfo.data();
     assertEquals(904, data.length);
     assertEquals(accountInfo.space(), data.length);
@@ -133,12 +133,12 @@ final class RoundTripRpcRequestTests extends RpcRequestTests {
 
     assertEquals(2, accounts.size());
     validateMultipleAccounts(accounts);
-    var accountInfo = accounts.getFirst();
+    var accountInfo = accounts.get(0);
     byte[] data = accountInfo.data();
     assertEquals(32, data.length);
     assertEquals("cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij", PublicKey.readPubKey(data).toString());
 
-    accountInfo = accounts.getLast();
+    accountInfo = accounts.get(accounts.size() - 1);
     data = accountInfo.data();
     assertEquals(32, data.length);
     assertEquals("So11111111111111111111111111111111111111112", PublicKey.readPubKey(data).toBase58());
@@ -158,7 +158,7 @@ final class RoundTripRpcRequestTests extends RpcRequestTests {
 
     assertEquals(2, accounts.size());
     validateCompleteMultipleAccounts(accounts);
-    assertEquals(328983133, accounts.getFirst().context().slot());
+    assertEquals(328983133, accounts.get(0).context().slot());
 
     registerRequest("""
             {"jsonrpc":"2.0","id":203,"method":"getMultipleAccounts","params":[["7ubS3GccjhQY99AYNKXjNJqnXjaokEdfdV915xnCb96r","11111111111111111111111111111111","5rCf1DM8LjKTw4YqhnoLcngyZYeNnQqztScTogYHAS6"],{"encoding":"base64","commitment":"finalized"}]}""",
@@ -177,7 +177,7 @@ final class RoundTripRpcRequestTests extends RpcRequestTests {
 
     assertEquals(2, accounts.size());
     validateCompleteMultipleAccounts(accounts);
-    assertEquals(328983133, accounts.getFirst().context().slot());
+    assertEquals(328983133, accounts.get(0).context().slot());
 
     accounts = rpcClient.getAccounts(
         Commitment.FINALIZED,
@@ -191,7 +191,7 @@ final class RoundTripRpcRequestTests extends RpcRequestTests {
     assertEquals(3, accounts.size());
     assertNull(accounts.get(1));
     validateCompleteMultipleAccounts(accounts);
-    assertEquals(328983133, accounts.getFirst().context().slot());
+    assertEquals(328983133, accounts.get(0).context().slot());
   }
 
   @Test
@@ -206,7 +206,7 @@ final class RoundTripRpcRequestTests extends RpcRequestTests {
         )
     ).join();
     assertEquals(1, inflationRewards.size());
-    var inflationReward = inflationRewards.getFirst();
+    var inflationReward = inflationRewards.get(0);
     assertEquals(1854511658, inflationReward.amount());
     assertEquals(5, inflationReward.commission());
     assertEquals(338256000, inflationReward.effectiveSlot());
@@ -220,10 +220,10 @@ final class RoundTripRpcRequestTests extends RpcRequestTests {
 
     inflationRewards = rpcClient.getInflationReward(List.of(
             PublicKey.fromBase58Encoded("BDn3HiXMTym7ZQofWFxDb7ZGQX6GomQzJYKfytTAqd5g")
-        ), inflationRewards.getFirst().epoch() - 1
+        ), inflationRewards.get(0).epoch() - 1
     ).join();
     assertEquals(1, inflationRewards.size());
-    inflationReward = inflationRewards.getFirst();
+    inflationReward = inflationRewards.get(0);
     assertEquals(1940761929, inflationReward.amount());
     assertEquals(5, inflationReward.commission());
     assertEquals(337824000, inflationReward.effectiveSlot());

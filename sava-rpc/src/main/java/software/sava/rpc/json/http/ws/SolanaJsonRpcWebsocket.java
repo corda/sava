@@ -3,6 +3,7 @@ package software.sava.rpc.json.http.ws;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.token.TokenAccount;
+import software.sava.core.internal.Java19Support;
 import software.sava.core.rpc.Filter;
 import software.sava.rpc.json.http.request.Commitment;
 import software.sava.rpc.json.http.response.*;
@@ -89,7 +90,7 @@ final class SolanaJsonRpcWebsocket implements WebSocket.Listener, SolanaRpcWebso
     this.programSubs = new ConcurrentSkipListMap<>();
     this.slotSub = new AtomicReference<>();
     this.subscriptionsBySubId = new ConcurrentSkipListMap<>();
-    this.exceptionSubs = HashSet.newHashSet(1);
+    this.exceptionSubs = Java19Support.newHashSet(1);
     this.buffer = new char[4_096];
     this.ji = JsonIterator.parse(new byte[0]);
     this.lock = new ReentrantLock();

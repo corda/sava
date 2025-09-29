@@ -3,9 +3,9 @@ package software.sava.core.accounts.lookup;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.sysvar.Clock;
 import software.sava.core.encoding.ByteUtil;
+import software.sava.core.internal.Java19Support;
 import software.sava.core.rpc.Filter;
 
-import java.util.HashMap;
 import java.util.Set;
 import java.util.function.BiFunction;
 
@@ -48,7 +48,7 @@ public interface AddressLookupTable {
         : readPubKey(data, AUTHORITY_OFFSET);
     final int numAccounts = (data.length - LOOKUP_TABLE_META_SIZE) >> 5;
     final var accounts = new PublicKey[numAccounts];
-    final var distinctAccounts = HashMap.<PublicKey, Integer>newHashMap(numAccounts);
+    final var distinctAccounts = Java19Support.<PublicKey, Integer>newHashMap(numAccounts);
 
     for (int i = 0, o = LOOKUP_TABLE_META_SIZE; i < numAccounts; ++i, o += PUBLIC_KEY_LENGTH) {
       final var pubKey = readPubKey(data, o);

@@ -20,7 +20,6 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.SequencedCollection;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -295,16 +294,16 @@ public interface SolanaRpcClient {
 
   CompletableFuture<InflationRate> getInflationRate();
 
-  CompletableFuture<List<InflationReward>> getInflationReward(final SequencedCollection<PublicKey> keys);
+  CompletableFuture<List<InflationReward>> getInflationReward(final Collection<PublicKey> keys);
 
   CompletableFuture<List<InflationReward>> getInflationReward(final Commitment commitment,
-                                                              final SequencedCollection<PublicKey> keys);
+                                                              final Collection<PublicKey> keys);
 
-  CompletableFuture<List<InflationReward>> getInflationReward(final SequencedCollection<PublicKey> keys,
+  CompletableFuture<List<InflationReward>> getInflationReward(final Collection<PublicKey> keys,
                                                               final long epoch);
 
   CompletableFuture<List<InflationReward>> getInflationReward(final Commitment commitment,
-                                                              final SequencedCollection<PublicKey> keys,
+                                                              final Collection<PublicKey> keys,
                                                               final long epoch);
 
   CompletableFuture<List<AccountLamports>> getLargestAccounts();
@@ -341,156 +340,156 @@ public interface SolanaRpcClient {
   /// This behavior does not match the response of the Solana RPC API one to one.
   ///
   /// It is recommended to use [SolanaRpcClient#getAccounts] instead.
-  <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final SequencedCollection<PublicKey> keys,
+  <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final Collection<PublicKey> keys,
                                                                   final BiFunction<PublicKey, byte[], T> factory);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final Commitment commitment,
-                                                                  final SequencedCollection<PublicKey> keys,
+                                                                  final Collection<PublicKey> keys,
                                                                   final BiFunction<PublicKey, byte[], T> factory);
 
-  default CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final SequencedCollection<PublicKey> keys) {
+  default CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final Collection<PublicKey> keys) {
     return getMultipleAccounts(keys, BYTES_IDENTITY);
   }
 
   default CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final Commitment commitment,
-                                                                           final SequencedCollection<PublicKey> keys) {
+                                                                           final Collection<PublicKey> keys) {
     return getMultipleAccounts(commitment, keys, BYTES_IDENTITY);
   }
 
   CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final int length,
                                                                    final int offset,
-                                                                   final SequencedCollection<PublicKey> keys);
+                                                                   final Collection<PublicKey> keys);
 
   CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final BigInteger minContextSlot,
-                                                                   final SequencedCollection<PublicKey> keys);
+                                                                   final Collection<PublicKey> keys);
 
   CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final BigInteger minContextSlot,
                                                                    final int length,
                                                                    final int offset,
-                                                                   final SequencedCollection<PublicKey> keys);
+                                                                   final Collection<PublicKey> keys);
 
   CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final Commitment commitment,
                                                                    final BigInteger minContextSlot,
-                                                                   final SequencedCollection<PublicKey> keys);
+                                                                   final Collection<PublicKey> keys);
 
   CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final Commitment commitment,
                                                                    final int length,
                                                                    final int offset,
-                                                                   final SequencedCollection<PublicKey> keys);
+                                                                   final Collection<PublicKey> keys);
 
   CompletableFuture<List<AccountInfo<byte[]>>> getMultipleAccounts(final Commitment commitment,
                                                                    final BigInteger minContextSlot,
                                                                    final int length,
                                                                    final int offset,
-                                                                   final SequencedCollection<PublicKey> keys);
+                                                                   final Collection<PublicKey> keys);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final int length,
                                                                   final int offset,
-                                                                  final SequencedCollection<PublicKey> keys,
+                                                                  final Collection<PublicKey> keys,
                                                                   final BiFunction<PublicKey, byte[], T> factory);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final BigInteger minContextSlot,
-                                                                  final SequencedCollection<PublicKey> keys,
+                                                                  final Collection<PublicKey> keys,
                                                                   final BiFunction<PublicKey, byte[], T> factory);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final BigInteger minContextSlot,
                                                                   final int length,
                                                                   final int offset,
-                                                                  final SequencedCollection<PublicKey> keys,
+                                                                  final Collection<PublicKey> keys,
                                                                   final BiFunction<PublicKey, byte[], T> factory);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final Commitment commitment,
                                                                   final int length,
                                                                   final int offset,
-                                                                  final SequencedCollection<PublicKey> keys,
+                                                                  final Collection<PublicKey> keys,
                                                                   final BiFunction<PublicKey, byte[], T> factory);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final Commitment commitment,
                                                                   final BigInteger minContextSlot,
-                                                                  final SequencedCollection<PublicKey> keys,
+                                                                  final Collection<PublicKey> keys,
                                                                   final BiFunction<PublicKey, byte[], T> factory);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getMultipleAccounts(final Commitment commitment,
                                                                   final BigInteger minContextSlot,
                                                                   final int length,
                                                                   final int offset,
-                                                                  final SequencedCollection<PublicKey> keys,
+                                                                  final Collection<PublicKey> keys,
                                                                   final BiFunction<PublicKey, byte[], T> factory);
 
-  <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final SequencedCollection<PublicKey> keys,
+  <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final Collection<PublicKey> keys,
                                                           final BiFunction<PublicKey, byte[], T> factory);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final Commitment commitment,
-                                                          final SequencedCollection<PublicKey> keys,
+                                                          final Collection<PublicKey> keys,
                                                           final BiFunction<PublicKey, byte[], T> factory);
 
-  default CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final SequencedCollection<PublicKey> keys) {
+  default CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final Collection<PublicKey> keys) {
     return getAccounts(keys, BYTES_IDENTITY);
   }
 
   default CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final Commitment commitment,
-                                                                   final SequencedCollection<PublicKey> keys) {
+                                                                   final Collection<PublicKey> keys) {
     return getAccounts(commitment, keys, BYTES_IDENTITY);
   }
 
   CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final int length,
                                                            final int offset,
-                                                           final SequencedCollection<PublicKey> keys);
+                                                           final Collection<PublicKey> keys);
 
   CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final BigInteger minContextSlot,
-                                                           final SequencedCollection<PublicKey> keys);
+                                                           final Collection<PublicKey> keys);
 
   CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final BigInteger minContextSlot,
                                                            final int length,
                                                            final int offset,
-                                                           final SequencedCollection<PublicKey> keys);
+                                                           final Collection<PublicKey> keys);
 
   CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final Commitment commitment,
                                                            final BigInteger minContextSlot,
-                                                           final SequencedCollection<PublicKey> keys);
+                                                           final Collection<PublicKey> keys);
 
   CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final Commitment commitment,
                                                            final int length,
                                                            final int offset,
-                                                           final SequencedCollection<PublicKey> keys);
+                                                           final Collection<PublicKey> keys);
 
   CompletableFuture<List<AccountInfo<byte[]>>> getAccounts(final Commitment commitment,
                                                            final BigInteger minContextSlot,
                                                            final int length,
                                                            final int offset,
-                                                           final SequencedCollection<PublicKey> keys);
+                                                           final Collection<PublicKey> keys);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final int length,
                                                           final int offset,
-                                                          final SequencedCollection<PublicKey> keys,
+                                                          final Collection<PublicKey> keys,
                                                           final BiFunction<PublicKey, byte[], T> factory);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final BigInteger minContextSlot,
-                                                          final SequencedCollection<PublicKey> keys,
+                                                          final Collection<PublicKey> keys,
                                                           final BiFunction<PublicKey, byte[], T> factory);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final BigInteger minContextSlot,
                                                           final int length,
                                                           final int offset,
-                                                          final SequencedCollection<PublicKey> keys,
+                                                          final Collection<PublicKey> keys,
                                                           final BiFunction<PublicKey, byte[], T> factory);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final Commitment commitment,
                                                           final int length,
                                                           final int offset,
-                                                          final SequencedCollection<PublicKey> keys,
+                                                          final Collection<PublicKey> keys,
                                                           final BiFunction<PublicKey, byte[], T> factory);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final Commitment commitment,
                                                           final BigInteger minContextSlot,
-                                                          final SequencedCollection<PublicKey> keys,
+                                                          final Collection<PublicKey> keys,
                                                           final BiFunction<PublicKey, byte[], T> factory);
 
   <T> CompletableFuture<List<AccountInfo<T>>> getAccounts(final Commitment commitment,
                                                           final BigInteger minContextSlot,
                                                           final int length,
                                                           final int offset,
-                                                          final SequencedCollection<PublicKey> keys,
+                                                          final Collection<PublicKey> keys,
                                                           final BiFunction<PublicKey, byte[], T> factory);
 
   default CompletableFuture<List<AccountInfo<byte[]>>> getProgramAccounts(final PublicKey programId) {
@@ -715,7 +714,7 @@ public interface SolanaRpcClient {
     return getRecentPrioritizationFees(null);
   }
 
-  CompletableFuture<List<PrioritizationFee>> getRecentPrioritizationFees(final SequencedCollection<PublicKey> writablePublicKeys);
+  CompletableFuture<List<PrioritizationFee>> getRecentPrioritizationFees(final Collection<PublicKey> writablePublicKeys);
 
   CompletableFuture<List<TxSig>> getSignaturesForAddress(final PublicKey address, final int limit);
 
@@ -741,18 +740,18 @@ public interface SolanaRpcClient {
                                                               final int limit,
                                                               final String untilTxSig);
 
-  default CompletableFuture<Map<String, TxStatus>> getSignatureStatuses(final SequencedCollection<String> signatures) {
+  default CompletableFuture<Map<String, TxStatus>> getSignatureStatuses(final Collection<String> signatures) {
     return getSignatureStatuses(signatures, false);
   }
 
-  CompletableFuture<Map<String, TxStatus>> getSignatureStatuses(final SequencedCollection<String> signatures,
+  CompletableFuture<Map<String, TxStatus>> getSignatureStatuses(final Collection<String> signatures,
                                                                 final boolean searchTransactionHistory);
 
-  default CompletableFuture<List<TxStatus>> getSigStatusList(final SequencedCollection<String> signatures) {
+  default CompletableFuture<List<TxStatus>> getSigStatusList(final Collection<String> signatures) {
     return getSigStatusList(signatures, false);
   }
 
-  CompletableFuture<List<TxStatus>> getSigStatusList(final SequencedCollection<String> signatures,
+  CompletableFuture<List<TxStatus>> getSigStatusList(final Collection<String> signatures,
                                                      final boolean searchTransactionHistory);
 
   CompletableFuture<Long> getSlot();
@@ -862,12 +861,12 @@ public interface SolanaRpcClient {
                                             final byte[] recentBlockHash);
 
   CompletableFuture<String> sendTransaction(final Transaction transaction,
-                                            final SequencedCollection<Signer> signers,
+                                            final Collection<Signer> signers,
                                             final byte[] recentBlockHash);
 
   CompletableFuture<String> sendTransaction(final Commitment preflightCommitment,
                                             final Transaction transaction,
-                                            final SequencedCollection<Signer> signers,
+                                            final Collection<Signer> signers,
                                             final byte[] recentBlockHash);
 
   default CompletableFuture<String> sendTransaction(final String base64SignedTx) {
@@ -934,12 +933,12 @@ public interface SolanaRpcClient {
 
   CompletableFuture<TxSimulation> simulateTransaction(final Transaction transaction,
                                                       final PublicKey signer,
-                                                      final SequencedCollection<PublicKey> accounts);
+                                                      final Collection<PublicKey> accounts);
 
   CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
                                                       final Transaction transaction,
                                                       final PublicKey signer,
-                                                      final SequencedCollection<PublicKey> accounts);
+                                                      final Collection<PublicKey> accounts);
 
   CompletableFuture<TxSimulation> simulateTransaction(final Transaction transaction);
 
@@ -954,30 +953,30 @@ public interface SolanaRpcClient {
 
   CompletableFuture<TxSimulation> simulateTransaction(final String base64EncodedTx,
                                                       final PublicKey signer,
-                                                      final SequencedCollection<PublicKey> accounts);
+                                                      final Collection<PublicKey> accounts);
 
   CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
                                                       final String base64EncodedTx,
                                                       final PublicKey signer,
-                                                      final SequencedCollection<PublicKey> accounts);
+                                                      final Collection<PublicKey> accounts);
 
   CompletableFuture<TxSimulation> simulateTransaction(final Transaction transaction,
-                                                      final SequencedCollection<PublicKey> signers,
-                                                      final SequencedCollection<PublicKey> accounts);
+                                                      final Collection<PublicKey> signers,
+                                                      final Collection<PublicKey> accounts);
 
   CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
                                                       final Transaction transaction,
-                                                      final SequencedCollection<PublicKey> signers,
-                                                      final SequencedCollection<PublicKey> accounts);
+                                                      final Collection<PublicKey> signers,
+                                                      final Collection<PublicKey> accounts);
 
   CompletableFuture<TxSimulation> simulateTransaction(final String base64EncodedTx,
-                                                      final SequencedCollection<PublicKey> signers,
-                                                      final SequencedCollection<PublicKey> accounts);
+                                                      final Collection<PublicKey> signers,
+                                                      final Collection<PublicKey> accounts);
 
   CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
                                                       final String base64EncodedTx,
-                                                      final SequencedCollection<PublicKey> signers,
-                                                      final SequencedCollection<PublicKey> accounts);
+                                                      final Collection<PublicKey> signers,
+                                                      final Collection<PublicKey> accounts);
 
   CompletableFuture<TxSimulation> simulateTransaction(final String base64EncodedTx,
                                                       final boolean replaceRecentBlockhash);

@@ -2,10 +2,9 @@ package software.sava.core.accounts.lookup;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.encoding.ByteUtil;
+import software.sava.core.internal.Java19Support;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -52,7 +51,7 @@ final class AddressLookupTableOverlay extends AddressLookupTableRoot {
   public AddressLookupTable withReverseLookup() {
     final int numAccounts = numAccounts();
     final var accounts = new PublicKey[numAccounts];
-    final var distinctAccounts = HashMap.<PublicKey, Integer>newHashMap(numAccounts);
+    final var distinctAccounts = Java19Support.<PublicKey, Integer>newHashMap(numAccounts);
     for (int i = 0, from = LOOKUP_TABLE_META_SIZE, to = data.length; from < to; ++i, from += PUBLIC_KEY_LENGTH) {
       final var pubKey = readPubKey(data, from);
       distinctAccounts.putIfAbsent(pubKey, i);
@@ -74,7 +73,7 @@ final class AddressLookupTableOverlay extends AddressLookupTableRoot {
   @Override
   public Set<PublicKey> uniqueAccounts() {
     final int numAccounts = numAccounts();
-    final var distinctAccounts = HashSet.<PublicKey>newHashSet(numAccounts);
+    final var distinctAccounts = Java19Support.<PublicKey>newHashSet(numAccounts);
     for (int i = 0, from = LOOKUP_TABLE_META_SIZE, to = data.length; from < to; ++i, from += PUBLIC_KEY_LENGTH) {
       distinctAccounts.add(readPubKey(data, from));
     }

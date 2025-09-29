@@ -1,6 +1,7 @@
 package software.sava.rpc.json.http.response;
 
 import software.sava.core.accounts.PublicKey;
+import software.sava.core.internal.Java19Support;
 import software.sava.rpc.json.PublicKeyEncoding;
 import systems.comodal.jsoniter.ContextFieldBufferPredicate;
 import systems.comodal.jsoniter.FieldBufferPredicate;
@@ -18,7 +19,7 @@ public record BlockProduction(Context context,
 
   @Deprecated
   public Map<String, ValidatorLeaderInfo> leaderInfo() {
-    final var leaderInfo = HashMap.<String, ValidatorLeaderInfo>newHashMap(leaderInfoMap.size());
+    final var leaderInfo = Java19Support.<String, ValidatorLeaderInfo>newHashMap(leaderInfoMap.size());
     for (final var entry : leaderInfoMap.entrySet()) {
       leaderInfo.put(entry.getKey().toBase58(), entry.getValue());
     }

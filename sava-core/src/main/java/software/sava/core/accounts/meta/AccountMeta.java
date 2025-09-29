@@ -1,8 +1,8 @@
 package software.sava.core.accounts.meta;
 
 import software.sava.core.accounts.PublicKey;
+import software.sava.core.internal.Java19Support;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -51,7 +51,7 @@ public sealed interface AccountMeta permits AccountMetaReadOnly {
   }
 
   static Map<PublicKey, AccountMeta> createAccountsMap(final int numAccounts, final PublicKey feePayer) {
-    final var accounts = HashMap.<PublicKey, AccountMeta>newHashMap(numAccounts);
+    final var accounts = Java19Support.<PublicKey, AccountMeta>newHashMap(numAccounts);
     final var feePayerMeta = createFeePayer(feePayer);
     accounts.put(feePayer, feePayerMeta);
     return accounts;

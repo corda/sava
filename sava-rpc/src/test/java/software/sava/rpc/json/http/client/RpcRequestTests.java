@@ -35,7 +35,7 @@ abstract class RpcRequestTests implements HttpHandler {
   }
 
   private static final System.Logger logger = System.getLogger(RpcRequestTests.class.getName());
-  private static final ExecutorService HTTP_EXECUTOR = Executors.newVirtualThreadPerTaskExecutor();
+  private static final ExecutorService HTTP_EXECUTOR = Executors.newCachedThreadPool();
   private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().executor(HTTP_EXECUTOR).build();
 
   private static final int DEFAULT_INVALID_REQUEST_CODE = 418;

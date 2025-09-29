@@ -1,5 +1,6 @@
 package software.sava.rpc.json.http.response;
 
+import software.sava.core.internal.Java19Support;
 import software.sava.rpc.json.http.client.SolanaRpcClient;
 import software.sava.rpc.json.http.request.Commitment;
 import systems.comodal.jsoniter.FieldBufferPredicate;
@@ -23,10 +24,10 @@ public record TxStatus(Context context,
         && confirmationStatus == null;
   }
 
-  public static Map<String, TxStatus> parse(final SequencedCollection<String> txIds,
+  public static Map<String, TxStatus> parse(final Collection<String> txIds,
                                             final JsonIterator ji,
                                             final Context context) {
-    final var statuses = HashMap.<String, TxStatus>newHashMap(txIds.size());
+    final var statuses = Java19Support.<String, TxStatus>newHashMap(txIds.size());
     final var iterator = txIds.iterator();
     TxStatus nil = null;
     while (ji.readArray()) {

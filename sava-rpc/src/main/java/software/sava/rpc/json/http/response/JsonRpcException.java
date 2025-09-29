@@ -53,15 +53,15 @@ public final class JsonRpcException extends RuntimeException {
 
   @Deprecated
   public List<String> logs() {
-    return customError instanceof RpcCustomError.SendTransactionPreflightFailure(final TxSimulation simulation)
-        ? simulation.logs()
+    return customError instanceof RpcCustomError.SendTransactionPreflightFailure stpf
+        ? stpf.simulation().logs()
         : NO_LOGS;
   }
 
   @Deprecated
   public long numSlotsBehind() {
-    return customError instanceof RpcCustomError.NodeUnhealthy(final OptionalLong numSlotsBehind)
-        ? numSlotsBehind.orElse(Integer.MIN_VALUE)
+    return customError instanceof RpcCustomError.NodeUnhealthy unhealthy
+        ? unhealthy.numSlotsBehind().orElse(Integer.MIN_VALUE)
         : Integer.MIN_VALUE;
   }
 

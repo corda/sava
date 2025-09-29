@@ -59,7 +59,8 @@ final class ParseCustomRpcErrorTests {
     assertTrue(exception.retryAfterSeconds().isEmpty());
 
     final var customError = exception.customError();
-    if (customError instanceof RpcCustomError.SendTransactionPreflightFailure(final var simulation)) {
+    if (customError instanceof RpcCustomError.SendTransactionPreflightFailure stpf) {
+      final var simulation = stpf.simulation();
       assertNull(simulation.context());
       assertNull(simulation.replacementBlockHash());
 
@@ -71,17 +72,17 @@ final class ParseCustomRpcErrorTests {
 
       final var logs = simulation.logs();
       assertEquals(7, logs.size());
-      assertEquals("Program GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY invoke [1]", logs.getFirst());
+      assertEquals("Program GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY invoke [1]", logs.get(0));
       assertEquals("Allocate: account Address { address: asdf, base: None } already in use", logs.get(3));
-      assertEquals("Program GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY failed: custom program error: 0x0", logs.getLast());
+      assertEquals("Program GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY failed: custom program error: 0x0", logs.get(logs.size() - 1));
 
       final var error = simulation.error();
       assertNotNull(error);
 
-      if (error instanceof TransactionError.InstructionError(int index, var ixError)) {
-        assertEquals(0, index);
-        if (ixError instanceof IxError.Custom(long code)) {
-          assertEquals(0, code);
+      if (error instanceof TransactionError.InstructionError instructionError) {
+        assertEquals(0, instructionError.ixIndex());
+        if (instructionError.ixError() instanceof IxError.Custom customIxError) {
+          assertEquals(0, customIxError.error());
         } else {
           fail(error.getClass().getSimpleName());
         }

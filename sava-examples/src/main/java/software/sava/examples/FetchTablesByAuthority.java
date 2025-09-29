@@ -16,7 +16,7 @@ public final class FetchTablesByAuthority {
     final var rpcEndpoint = "https://mainnet.helius-rpc.com/?api-key=";
     final var authority = PublicKey.fromBase58Encoded("");
 
-    try (final var httpClient = HttpClient.newHttpClient()) {
+    final var httpClient = HttpClient.newHttpClient();
       final var rpcClient = SolanaRpcClient.createClient(URI.create(rpcEndpoint), httpClient);
 
       final var tableAccountInfoList = rpcClient.getProgramAccounts(
@@ -30,6 +30,5 @@ public final class FetchTablesByAuthority {
         final var table = AddressLookupTable.read(accountInfo.pubKey(), accountInfo.data());
         System.out.println(table);
       }
-    }
   }
 }

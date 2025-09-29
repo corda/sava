@@ -84,7 +84,7 @@ public final class Entrypoint {
         Math.max(1, Runtime.getRuntime().availableProcessors() >> 1)
     );
 
-    try (final var executor = Executors.newFixedThreadPool(numThreads)) {
+    final var executor = Executors.newFixedThreadPool(numThreads);
       final var keyPath = readKeyPath(moduleName, beginsWith, endsWith);
       final int findNumKeys = intProp(moduleName, "numKeys", 1);
       final int checkFound = intProp(moduleName, "checkFound", 131_072);
@@ -159,7 +159,6 @@ public final class Entrypoint {
           }
         }
       }
-    }
   }
 
   private static String maybePlural(final long val, final String context) {

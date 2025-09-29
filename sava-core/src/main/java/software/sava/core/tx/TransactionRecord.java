@@ -9,7 +9,6 @@ import software.sava.core.encoding.Base58;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.SequencedCollection;
 
 import static software.sava.core.accounts.PublicKey.PUBLIC_KEY_LENGTH;
 import static software.sava.core.encoding.CompactU16Encoding.signedByte;
@@ -105,16 +104,6 @@ record TransactionRecord(AccountMeta feePayer,
   }
 
   @Override
-  public void sign(final SequencedCollection<Signer> signers) {
-    final int numSigners = signers.size();
-    if (numSigners != this.numSigners) {
-      throw new IllegalArgumentException(String.format("Expected %d signers, only passed %d.", this.numSigners, numSigners));
-    }
-    this.data[0] = (byte) numSigners;
-    Transaction.sign(signers, this.data, this.messageOffset, this.data.length - this.messageOffset, 1);
-  }
-
-  @Override
   public void sign(final Collection<Signer> signers) {
     final int numSigners = signers.size();
     if (numSigners != this.numSigners) {
@@ -178,7 +167,7 @@ record TransactionRecord(AccountMeta feePayer,
   }
 
   @Override
-  public Transaction prependInstructions(final SequencedCollection<Instruction> instructions) {
+  public Transaction prependInstructions(final Collection<Instruction> instructions) {
     final var ixArray = new Instruction[instructions.size() + this.instructions.size()];
     int i = 0;
     for (final var ix : instructions) {
@@ -202,7 +191,7 @@ record TransactionRecord(AccountMeta feePayer,
   }
 
   @Override
-  public Transaction appendInstructions(final SequencedCollection<Instruction> instructions) {
+  public Transaction appendInstructions(final Collection<Instruction> instructions) {
     final var ixArray = new Instruction[instructions.size() + this.instructions.size()];
     int i = 0;
     for (final var ix : this.instructions) {

@@ -59,7 +59,7 @@ public record AccountInfo<T>(PublicKey pubKey,
     return parser.create(factory);
   }
 
-  public static <T> List<AccountInfo<T>> parseAccountsFromKeys(final SequencedCollection<PublicKey> pubKeys,
+  public static <T> List<AccountInfo<T>> parseAccountsFromKeys(final Collection<PublicKey> pubKeys,
                                                                final JsonIterator ji,
                                                                final Context context,
                                                                final BiFunction<PublicKey, byte[], T> factory) {
@@ -78,7 +78,7 @@ public record AccountInfo<T>(PublicKey pubKey,
     return accounts;
   }
 
-  public static <T> List<AccountInfo<T>> parseAccountsFromKeysWithNulls(final SequencedCollection<PublicKey> pubKeys,
+  public static <T> List<AccountInfo<T>> parseAccountsFromKeysWithNulls(final Collection<PublicKey> pubKeys,
                                                                         final JsonIterator ji,
                                                                         final Context context,
                                                                         final BiFunction<PublicKey, byte[], T> factory) {
