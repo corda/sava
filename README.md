@@ -1,3 +1,37 @@
+# Corda Fork
+
+The upstream library follows the JDK's [tip & tail](https://openjdk.org/jeps/14) release model and keeps in-sync 
+with the latest Java version. So at the time of writing it only supports from Java 25 (the tip) to Java 21 
+(the tail). This forks extends this to Java 17. However, doing so required some API changes which depend on features 
+not in Java 17, such as [SequencedCollection](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/SequencedCollection.html).
+
+The main branch of this fork is `corda`, which tracks `upstream/main`. It keeps the same Maven coordinates and 
+version. The only difference is `-j17-<forked-patch>` is appended to the latest version it's forked from. The
+`forked-patch` number is for tracking changes in this fork which are still based on the same upstream version.
+
+To make a new release against a newer upstream version, merge `upstream/main` into `corda`. Make sure to update the 
+[`version` property](gradle.properties) to the latest version with `-17-1` appended at the end.
+
+## Forked Dependencies
+
+You may find the `software.sava.build` plugin [version](settings.gradle.kts) was also updated upstream. This plugin 
+also needed to be [forked](https://github.com/corda/sava-build) as the upstream version doesn't work with Java 17. 
+If the upstream version was updated then the `sava-build` fork will also need to be updated to be based on this new 
+upstream version. It follows the exact same branching and versioning strategy as this fork.
+
+It's also possible the [BOM version](gradle/sava.properties) was updated. This is another repo that needed to be
+[forked](https://github.com/corda/solana-version-catalog), and it also follows the branching and versioning 
+strategy.
+
+The final repo that needed to be forked for Java 17 is [json-iterator](https://github.com/corda/json-iterator). Its 
+version is tracked in the BOM, and so in updating that you may find the upstream version for it has changed and so 
+this fork will need to be updated accordingly.
+
+## CI
+
+There is a single [Jenkins stage](Jenkinsfile) that both tests and publishes from the `corda` branch. So make sure 
+any changes have the relevant change to the [version](gradle.properties). This also applies to the other forks.
+
 ![Sava](assets/images/solana_java_cup.svg)
 
 # Sava [![Gradle Check](https://github.com/sava-software/sava/actions/workflows/build.yml/badge.svg)](https://github.com/sava-software/sava/actions/workflows/build.yml) [![Publish Release](https://github.com/sava-software/sava/actions/workflows/publish.yml/badge.svg)](https://github.com/sava-software/sava/actions/workflows/publish.yml)
