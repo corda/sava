@@ -2,8 +2,8 @@
 
 The upstream library follows the JDK's [tip & tail](https://openjdk.org/jeps/14) release model and keeps in-sync 
 with the latest Java version. So at the time of writing it only supports from Java 25 (the tip) to Java 21 
-(the tail). This forks extends this to Java 17. However, doing so required some API changes which depend on features 
-not in Java 17, such as [SequencedCollection](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/SequencedCollection.html).
+(the tail). This fork extends this to Java 17. However, doing so required changes to APIs which use features not in 
+Java 17, such as [SequencedCollection](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/SequencedCollection.html).
 
 The main branch of this fork is `corda`, which tracks `upstream/main`. It keeps the same Maven coordinates and 
 version. The only difference is `-j17-<forked-patch>` is appended to the latest version it's forked from. The
@@ -11,6 +11,12 @@ version. The only difference is `-j17-<forked-patch>` is appended to the latest 
 
 To make a new release against a newer upstream version, merge `upstream/main` into `corda`. Make sure to update the 
 [`version` property](gradle.properties) to the latest version with `-17-1` appended at the end.
+
+List of changes from upstream:
+
+* Replaced `SequencedCollection` with `Collection`
+* `sendTransaction` and `sendTransactionSkipPreflight` implementations do not add the `maxRetries` parameter if it 
+  is negative
 
 ## Forked Dependencies
 
