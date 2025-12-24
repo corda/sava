@@ -931,10 +931,12 @@ public interface SolanaRpcClient {
         : sendTransaction(preflightCommitment, base64SignedTx, maxRetries);
   }
 
+  @Deprecated
   CompletableFuture<TxSimulation> simulateTransaction(final Transaction transaction,
                                                       final PublicKey signer,
                                                       final Collection<PublicKey> accounts);
 
+  @Deprecated
   CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
                                                       final Transaction transaction,
                                                       final PublicKey signer,
@@ -951,28 +953,34 @@ public interface SolanaRpcClient {
 
   CompletableFuture<TxSimulation> simulateTransaction(final String base64EncodedTx);
 
+  @Deprecated
   CompletableFuture<TxSimulation> simulateTransaction(final String base64EncodedTx,
                                                       final PublicKey signer,
                                                       final Collection<PublicKey> accounts);
 
+  @Deprecated
   CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
                                                       final String base64EncodedTx,
                                                       final PublicKey signer,
                                                       final Collection<PublicKey> accounts);
 
+  @Deprecated
   CompletableFuture<TxSimulation> simulateTransaction(final Transaction transaction,
                                                       final Collection<PublicKey> signers,
                                                       final Collection<PublicKey> accounts);
 
+  @Deprecated
   CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
                                                       final Transaction transaction,
                                                       final Collection<PublicKey> signers,
                                                       final Collection<PublicKey> accounts);
 
+  @Deprecated
   CompletableFuture<TxSimulation> simulateTransaction(final String base64EncodedTx,
                                                       final Collection<PublicKey> signers,
                                                       final Collection<PublicKey> accounts);
 
+  @Deprecated
   CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
                                                       final String base64EncodedTx,
                                                       final Collection<PublicKey> signers,
@@ -1012,4 +1020,10 @@ public interface SolanaRpcClient {
   CompletableFuture<TxSimulation> simulateTransaction(final String base64EncodedTx,
                                                       final boolean replaceRecentBlockhash,
                                                       final boolean innerInstructions);
+
+  CompletableFuture<TxSimulation> simulateTransaction(final Commitment commitment,
+                                                      final String base64EncodedTx,
+                                                      final boolean replaceRecentBlockhash,
+                                                      final boolean innerInstructions,
+                                                      final SequencedCollection<PublicKey> accounts);
 }
