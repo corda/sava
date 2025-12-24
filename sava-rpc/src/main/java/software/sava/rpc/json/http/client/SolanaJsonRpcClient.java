@@ -1647,7 +1647,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
     return simulateTransaction(defaultCommitment, base64EncodedTx, signers, accounts);
   }
 
-  private static String joinSimulationAccounts(final SequencedCollection<PublicKey> accounts) {
+  private static String joinSimulationAccounts(final Collection<PublicKey> accounts) {
     return accounts.stream()
         .map(PublicKey::toBase58)
         .collect(Collectors.joining("\",\"", ",\"accounts\":{\"addresses\":[\"", "\"],\"encoding\":\"base64\"}"));
@@ -1775,7 +1775,7 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
                                                              final String base64EncodedTx,
                                                              final boolean replaceRecentBlockhash,
                                                              final boolean innerInstructions,
-                                                             final SequencedCollection<PublicKey> accounts) {
+                                                             final Collection<PublicKey> accounts) {
     if (accounts.isEmpty()) {
       return simulateTransaction(commitment, base64EncodedTx, replaceRecentBlockhash, innerInstructions);
     }

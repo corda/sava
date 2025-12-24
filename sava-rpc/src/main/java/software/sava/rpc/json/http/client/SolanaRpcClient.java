@@ -1025,5 +1025,5 @@ public interface SolanaRpcClient {
                                                       final String base64EncodedTx,
                                                       final boolean replaceRecentBlockhash,
                                                       final boolean innerInstructions,
-                                                      final SequencedCollection<PublicKey> accounts);
+                                                      final Collection<PublicKey> accounts);
 }
