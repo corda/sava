@@ -10,6 +10,7 @@ import software.sava.rpc.json.http.response.*;
 import systems.comodal.jsoniter.CharBufferFunction;
 import systems.comodal.jsoniter.JsonIterator;
 
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
@@ -46,14 +47,14 @@ final class SolanaJsonRpcWebsocket implements WebSocket.Listener, SolanaRpcWebso
   private final BiConsumer<SolanaRpcWebsocket, Throwable> onError;
   private final AtomicLong msgId;
   private final Map<Long, Subscription<?>> pendingSubscriptions;
-  private final Map<Long, String> pendingUnSubscriptions;
+  private final Map<BigInteger, String> pendingUnSubscriptions;
   private final Map<String, Map<Commitment, Subscription<AccountInfo<byte[]>>>> accountSubs;
   private final Map<String, Map<Commitment, Subscription<TxLogs>>> txLogSubs;
   private final Map<String, Map<Commitment, Subscription<TxResult>>> signatureSubs;
   private final Map<String, Map<Commitment, Subscription<AccountInfo<byte[]>>>> programSubs;
   private final Set<Consumer<RuntimeException>> exceptionSubs;
   private final AtomicReference<Subscription<ProcessedSlot>> slotSub;
-  private final Map<Long, Subscription<?>> subscriptionsBySubId;
+  private final Map<BigInteger, Subscription<?>> subscriptionsBySubId;
 
   private final ReentrantLock lock;
   private final Condition newSubscription;
@@ -147,15 +148,19 @@ final class SolanaJsonRpcWebsocket implements WebSocket.Listener, SolanaRpcWebso
     }
   }
 
-  @SuppressWarnings({"InfiniteLoopStatement", "ResultOfMethodCallIgnored"})
   @Override
   public void run() {
     try {
-      final long sleep = timings.subscriptionAndPingCheckDelay();
+      final long sleepNanos = MILLISECONDS.toNanos(timings.subscriptionAndPingCheckDelay());
       for (; ; ) {
         lock.lock();
         try {
-          newSubscription.await(sleep, MILLISECONDS);
+          for (long remaining = sleepNanos; ; ) {
+            remaining = newSubscription.awaitNanos(remaining);
+            if (remaining <= 0 || !this.pendingSubscriptions.isEmpty()) {
+              break;
+            }
+          }
           final var webSocket = this.webSocket;
           if (webSocket != null) {
             handlePendingSubscriptions(webSocket);
@@ -165,9 +170,10 @@ final class SolanaJsonRpcWebsocket implements WebSocket.Listener, SolanaRpcWebso
         }
       }
     } catch (final InterruptedException e) {
-      close();
+      // exit
     } catch (final RuntimeException ex) {
       log.log(ERROR, "Unhandled Solana Websocket exception.", ex);
+    } finally {
       close();
     }
   }
@@ -269,8 +275,8 @@ final class SolanaJsonRpcWebsocket implements WebSocket.Listener, SolanaRpcWebso
 
   private void queueUnsubscribe(final Subscription<?> sub) {
     this.pendingSubscriptions.remove(sub.msgId());
-    final long subId = sub.subId();
-    if (subId >= 0) {
+    final var subId = sub.subId();
+    if (subId != null) {
       this.subscriptionsBySubId.remove(subId);
       final var msg = createUnSubMsg(sub.channel(), subId);
       this.pendingUnSubscriptions.put(subId, msg);
@@ -549,7 +555,7 @@ final class SolanaJsonRpcWebsocket implements WebSocket.Listener, SolanaRpcWebso
     }
   };
 
-  private String createUnSubMsg(final Channel channel, long subId) {
+  private String createUnSubMsg(final Channel channel, final BigInteger subId) {
     return String.format("""
             {"jsonrpc":"2.0","id":%d,"method":"%s","params":[%d]}""",
         this.msgId.incrementAndGet(), channel.unSubscribe(), subId
@@ -564,7 +570,7 @@ final class SolanaJsonRpcWebsocket implements WebSocket.Listener, SolanaRpcWebso
 
   private void sendUnSubscription(final WebSocket webSocket,
                                   final Channel channel,
-                                  final long subId) {
+                                  final BigInteger subId) {
     lock.lock();
     try {
       final var msg = this.pendingUnSubscriptions.remove(subId);
@@ -584,7 +590,7 @@ final class SolanaJsonRpcWebsocket implements WebSocket.Listener, SolanaRpcWebso
     if (ji.skipUntil("subscription") == null) {
       ji.reset(paramsMark).skipUntil("subscription");
     }
-    final long subId = ji.readLong();
+    final var subId = ji.readBigInteger();
     @SuppressWarnings("unchecked") final var sub = ((Subscription<T>) this.subscriptionsBySubId.get(subId));
     if (sub == null) {
       sendUnSubscription(webSocket, channel, subId);
@@ -603,7 +609,7 @@ final class SolanaJsonRpcWebsocket implements WebSocket.Listener, SolanaRpcWebso
     if (ji.skipUntil("subscription") == null) {
       ji.reset(paramsMark).skipUntil("subscription");
     }
-    final long subId = ji.readLong();
+    final var subId = ji.readBigInteger();
     @SuppressWarnings("unchecked") final var sub = ((Subscription<T>) this.subscriptionsBySubId.get(subId));
     if (sub == null) {
       sendUnSubscription(webSocket, channel, subId);
@@ -632,7 +638,7 @@ final class SolanaJsonRpcWebsocket implements WebSocket.Listener, SolanaRpcWebso
           }
         } else {
           final var sub = SubConfirmation.parse(ji.reset(offset));
-          if (sub.subId() > 0) {
+          if (sub.subId() != null) {
             final var pendingSub = this.pendingSubscriptions.remove(sub.msgId());
             if (pendingSub != null) {
               pendingSub.setSubId(sub.subId());
@@ -651,7 +657,7 @@ final class SolanaJsonRpcWebsocket implements WebSocket.Listener, SolanaRpcWebso
           if (channel == Channel.slot) {
             final var slotSub = this.slotSub.get();
             if (slotSub == null) {
-              final long subId = ji.skipUntil("subscription").readLong();
+              final var subId = ji.skipUntil("subscription").readBigInteger();
               sendUnSubscription(webSocket, channel, subId);
             } else {
               ji.skipUntil("result");
@@ -681,12 +687,12 @@ final class SolanaJsonRpcWebsocket implements WebSocket.Listener, SolanaRpcWebso
                   if (ji.skipUntil("subscription") == null) {
                     ji.reset(paramsMark).skipUntil("subscription");
                   }
-                  final long subId = ji.readLong();
+                  final var subId = ji.readBigInteger();
                   @SuppressWarnings("unchecked") final var sub = (Subscription<TxResult>) this.subscriptionsBySubId.get(subId);
                   if (sub != null) {
                     sub.accept(result);
                     if (!"receivedSignature".equals(result.value())) {
-                      // Server side subscription is automatically cancelled after processed message has been sent.
+                      // Server side subscription is automatically canceled after a processed message has been sent.
                       this.subscriptionsBySubId.remove(subId);
                     }
                   }
