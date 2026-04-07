@@ -26,11 +26,15 @@ public final class JsonUtil {
         final var encoding = RpcEncoding.parseEncoding(ji);
         final int mark2 = ji.mark();
         ji.reset(mark);
-        final byte[] decodedData = switch (encoding) {
-          case base58 -> Base58.decode(ji.readString());
-          case base64, base64_zstd -> ji.decodeBase64String();
-          case null -> new byte[0];
-        };
+        final byte[] decodedData;
+        if (encoding == null) {
+          decodedData = new byte[0];
+        } else {
+          decodedData = switch (encoding) {
+            case base58 -> Base58.decode(ji.readString());
+            case base64, base64_zstd -> ji.decodeBase64String();
+          };
+        }
         ji.reset(mark2).skipRestOfArray();
         return decodedData;
       } else {
