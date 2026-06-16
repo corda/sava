@@ -15,8 +15,6 @@ To make a new release against a newer upstream version, merge `upstream/main` in
 List of changes from upstream:
 
 * Replaced `SequencedCollection` with `Collection`
-* `sendTransaction` and `sendTransactionSkipPreflight` implementations do not add the `maxRetries` parameter if it 
-  is negative
 
 ## Forked Dependencies
 

@@ -1541,13 +1541,6 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   public CompletableFuture<String> sendTransaction(final Commitment preflightCommitment,
                                                    final String base64SignedTx,
                                                    final int maxRetries) {
-    if (maxRetries < 0) {
-      return sendPostRequestNoWrap(sendTxResponseParser, format("""
-                {"jsonrpc":"2.0","id":%d,"method":"sendTransaction","params":["%s",{"encoding":"base64","preflightCommitment":"%s"}]}""",
-          id.incrementAndGet(), base64SignedTx, preflightCommitment.getValue()
-        )
-      );
-    }
     return sendPostRequestNoWrap(sendTxResponseParser, format("""
                 {"jsonrpc":"2.0","id":%d,"method":"sendTransaction","params":["%s",{"encoding":"base64","preflightCommitment":"%s","maxRetries":%d}]}""",
             id.incrementAndGet(), base64SignedTx, preflightCommitment.getValue(), maxRetries
@@ -1559,13 +1552,6 @@ final class SolanaJsonRpcClient extends BaseSolanaJsonRpcClient implements Solan
   public CompletableFuture<String> sendTransactionSkipPreflight(final Commitment preflightCommitment,
                                                                 final String base64SignedTx,
                                                                 final int maxRetries) {
-    if (maxRetries < 0) {
-      return sendPostRequestNoWrap(sendTxResponseParser, format("""
-                {"jsonrpc":"2.0","id":%d,"method":"sendTransaction","params":["%s",{"encoding":"base64","skipPreflight":true,"preflightCommitment":"%s"}]}""",
-          id.incrementAndGet(), base64SignedTx, preflightCommitment.getValue()
-        )
-      );
-    }
     return sendPostRequestNoWrap(sendTxResponseParser, format("""
                 {"jsonrpc":"2.0","id":%d,"method":"sendTransaction","params":["%s",{"encoding":"base64","skipPreflight":true,"preflightCommitment":"%s","maxRetries":%d}]}""",
             id.incrementAndGet(), base64SignedTx, preflightCommitment.getValue(), maxRetries
